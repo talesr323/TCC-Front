@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from "react-native";
-import api from "../../src/services/api";
+import api from "../src/services/api";
 
 export default function Users() {
   const [usuarios, setUsuarios] = useState([]);

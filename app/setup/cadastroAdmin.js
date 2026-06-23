@@ -31,8 +31,8 @@ export default function CadastroAdmin() {
     try {
       setLoading(true);
 
-      const response = await fetch(
-  "http://192.168.0.10:3001/api/setup-inicial",
+    const response = await fetch(
+  "http://192.168.0.10:3001/admin",
   {
     method: "POST",
     headers: {
@@ -52,7 +52,7 @@ export default function CadastroAdmin() {
           Alert.alert("Sucesso", "Admin cadastrado com sucesso!");
 
     setTimeout(() => {
-      router.replace("/login");
+      router.replace("/setup/login");
     }, 300);
 
     } catch (error) {
