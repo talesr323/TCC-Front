@@ -1,12 +1,35 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 export default function AdminHome() {
   const router = useRouter();
 
+  const handleLogout = () => {
+    Alert.alert("Sair", "Deseja realmente sair da conta?", [
+      { text: "Cancelar", style: "cancel" },
+      {
+        text: "Sair",
+        style: "destructive",
+        onPress: async () => {
+          await AsyncStorage.removeItem("token");
+          await AsyncStorage.removeItem("tipo");
+
+          router.replace("/setup/login");
+        },
+      },
+    ]);
+  };
+
   return (
     <ScrollView style={styles.container}>
-      
       <Text style={styles.title}>Dashboard</Text>
 
       {/* Cards */}
@@ -49,14 +72,21 @@ export default function AdminHome() {
         <Text style={styles.buttonText}>Listar usuários</Text>
       </TouchableOpacity>
 
+      {/* LOGOUT */}
+      <TouchableOpacity
+        style={[styles.button, { backgroundColor: "#ef4444", marginTop: 20 }]}
+        onPress={handleLogout}
+      >
+        <Text style={styles.buttonText}>Sair da conta</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     padding: 20,
-    backgroundColor: "#f3f4f6",
   },
 
   title: {
@@ -65,40 +95,39 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
 
-  subtitle: {
-    fontSize: 18,
-    marginTop: 20,
-    marginBottom: 10,
-    fontWeight: "bold",
-  },
-
   cardContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
+    marginBottom: 20,
   },
 
   card: {
-    width: "48%",
     backgroundColor: "#fff",
     padding: 15,
     borderRadius: 10,
     marginBottom: 10,
+    elevation: 2,
   },
 
   cardTitle: {
-    color: "#6b7280",
+    fontSize: 14,
+    color: "#666",
   },
 
   cardValue: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: "bold",
+    marginTop: 5,
+  },
+
+  subtitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 10,
   },
 
   button: {
     backgroundColor: "#2563eb",
     padding: 15,
-    borderRadius: 10,
+    borderRadius: 8,
     marginBottom: 10,
   },
 

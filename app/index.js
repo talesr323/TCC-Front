@@ -1,11 +1,5 @@
-import { Redirect, useRootNavigationState } from "expo-router";
+import { Redirect } from "expo-router";
 
 export default function Index() {
-  const navigationState = useRootNavigationState();
-
-  if (!navigationState?.key) {
-    return null; // espera o router montar
-  }
-
-  return <Redirect href="/cadastroAdmin" />;
+  return <Redirect href="/setup/cadastroAdmin" />;
 }

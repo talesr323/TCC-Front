@@ -2,7 +2,7 @@ import * as Linking from "expo-linking";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Alert, Button, Text, TextInput, View } from "react-native";
-import api from "../../src/services/api";
+import api from "../src/services/api";
 
 export default function CreateUser() {
   const router = useRouter();
