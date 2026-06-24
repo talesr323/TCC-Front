@@ -1,6 +1,16 @@
 import { router } from "expo-router";
 import { useState } from "react";
-import { Alert, Button, ScrollView, Text, TextInput } from "react-native";
+import {
+  Alert,
+  Image,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { styles } from "../../src/styles/style"; // Importando os estilos isolados
 
 export default function CadastroAdmin() {
   const [loading, setLoading] = useState(false);
@@ -18,29 +28,32 @@ export default function CadastroAdmin() {
     cpf: "",
     telefone: "",
     senha: "",
+    confirmarSenha: "", // Adicionado para bater com o layout visual
   });
 
   function handleChange(field, value) {
     setForm((prev) => ({
       ...prev,
-      [field]: value ?? "", // 🔥 evita null/undefined
+      [field]: value ?? "",
     }));
   }
 
   async function handleSubmit() {
+    if (form.senha !== form.confirmarSenha) {
+      Alert.alert("Erro", "As senhas não coincidem!");
+      return;
+    }
+
     try {
       setLoading(true);
 
-    const response = await fetch(
-  "http://192.168.0.10:3001/admin",
-  {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(form),
-  }
-);
+      const response = await fetch("http://192.168.1.147:3001/admin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(form),
+      });
 
       const data = await response.json();
 
@@ -49,12 +62,11 @@ export default function CadastroAdmin() {
         return;
       }
 
-          Alert.alert("Sucesso", "Admin cadastrado com sucesso!");
+      Alert.alert("Sucesso", "Admin cadastrado com sucesso!");
 
-    setTimeout(() => {
-      router.replace("/setup/login");
-    }, 300);
-
+      setTimeout(() => {
+        router.replace("/setup/login");
+      }, 300);
     } catch (error) {
       console.log(error);
       Alert.alert("Erro", "Falha na requisição");
@@ -64,93 +76,343 @@ export default function CadastroAdmin() {
   }
 
   return (
-    <ScrollView style={{ padding: 20 }}>
-      <Text style={{ fontSize: 22, marginBottom: 10 }}>
-        Cadastro da Academia
-      </Text>
+    <SafeAreaView style={styles.container}>
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.column}>
+          <Image
+            source={{
+              uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/m3yzw5ym_expires_30_days.png",
+            }}
+            resizeMode={"stretch"}
+            style={styles.image}
+          />
+          <Text style={styles.text}>Cadastro Inicial</Text>
+          <Text style={styles.text2}>Configure sua academia</Text>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.text3}>Administrador</Text>
+          </TouchableOpacity>
+        </View>
 
-      <TextInput
-        placeholder="Nome da academia"
-        value={form.nomeAcademia}
-        onChangeText={(v) => handleChange("nomeAcademia", v)}
-      />
+        <View style={styles.column2}>
+          <View style={styles.column}>
+            <Image
+              source={{
+                uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/241oxn4x_expires_30_days.png",
+              }}
+              resizeMode={"stretch"}
+              style={styles.image2}
+            />
+            <Text style={styles.text4}>Foto de perfil (opcional)</Text>
+          </View>
 
-      <TextInput
-        placeholder="CNPJ"
-        value={form.cnpj}
-        onChangeText={(v) => handleChange("cnpj", v)}
-      />
+          <View style={styles.row}>
+            <Image
+              source={{
+                uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/tkzi2qq5_expires_30_days.png",
+              }}
+              resizeMode={"stretch"}
+              style={styles.image3}
+            />
+            <Text style={styles.text5}>Dados da Academia</Text>
+          </View>
 
-      <TextInput
-        placeholder="Endereço"
-        value={form.endereco}
-        onChangeText={(v) => handleChange("endereco", v)}
-      />
+          {/* Nome da Academia */}
+          <View style={styles.column3}>
+            <View style={styles.view}>
+              <Text style={styles.text6}>Nome da Academia *</Text>
+            </View>
+            <View style={styles.row2}>
+              <Image
+                source={{
+                  uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/bmm4i9gq_expires_30_days.png",
+                }}
+                resizeMode={"stretch"}
+                style={styles.image4}
+              />
+              <TextInput
+                placeholder="Academia FitPro"
+                value={form.nomeAcademia}
+                onChangeText={(v) => handleChange("nomeAcademia", v)}
+                style={styles.input}
+              />
+            </View>
+          </View>
 
-      <TextInput
-        placeholder="CEP"
-        value={form.cep}
-        onChangeText={(v) => handleChange("cep", v)}
-      />
+          {/* CNPJ */}
+          <View style={styles.column3}>
+            <View style={styles.view}>
+              <Text style={styles.text6}>CNPJ *</Text>
+            </View>
+            <View style={styles.row2}>
+              <Image
+                source={{
+                  uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/krwrhq5m_expires_30_days.png",
+                }}
+                resizeMode={"stretch"}
+                style={styles.image4}
+              />
+              <TextInput
+                placeholder="00.000.000/0000-00"
+                value={form.cnpj}
+                onChangeText={(v) => handleChange("cnpj", v)}
+                style={styles.input}
+              />
+            </View>
+          </View>
 
-      <TextInput
-        placeholder="Cidade"
-        value={form.cidade}
-        onChangeText={(v) => handleChange("cidade", v)}
-      />
+          {/* Endereço */}
+          <View style={styles.column4}>
+            <View style={styles.view}>
+              <Text style={styles.text6}>Endereço *</Text>
+            </View>
+            <View style={styles.row2}>
+              <Image
+                source={{
+                  uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/tk3w188p_expires_30_days.png",
+                }}
+                resizeMode={"stretch"}
+                style={styles.image4}
+              />
+              <TextInput
+                placeholder="Rua, número, bairro"
+                value={form.endereco}
+                onChangeText={(v) => handleChange("endereco", v)}
+                style={styles.input}
+              />
+            </View>
+          </View>
 
-      <TextInput
-        placeholder="Estado"
-        value={form.estado}
-        onChangeText={(v) => handleChange("estado", v)}
-      />
+          {/* CEP, Cidade e Estado */}
+          <View style={styles.row3}>
+            <View style={styles.column5}>
+              <Text style={styles.text7}>CEP *</Text>
+              <View style={styles.row2}>
+                <TextInput
+                  placeholder="16200-070"
+                  value={form.cep}
+                  onChangeText={(v) => handleChange("cep", v)}
+                  style={[styles.input, { paddingHorizontal: 10 }]}
+                />
+              </View>
+            </View>
 
-      <Text style={{ fontSize: 18, marginTop: 20 }}>
-        Administrador
-      </Text>
+            <View style={styles.column6}>
+              <Text style={styles.text9}>Cidade *</Text>
+              <TextInput
+                placeholder="São Paulo"
+                value={form.cidade}
+                onChangeText={(v) => handleChange("cidade", v)}
+                style={styles.input2}
+              />
+            </View>
 
-      <TextInput
-        placeholder="Nome"
-        value={form.nome}
-        onChangeText={(v) => handleChange("nome", v)}
-      />
+            <View style={styles.column7}>
+              <View style={styles.view2}>
+                <Text style={styles.text6}>Estado *</Text>
+              </View>
+              <View style={styles.row2}>
+                <TextInput
+                  placeholder="SP"
+                  maxLength={2}
+                  autoCapitalize="characters"
+                  value={form.estado}
+                  onChangeText={(v) => handleChange("estado", v)}
+                  style={[
+                    styles.input,
+                    { paddingHorizontal: 10, textAlign: "center" },
+                  ]}
+                />
+              </View>
+            </View>
+          </View>
 
-      <TextInput
-        placeholder="Sobrenome"
-        value={form.sobrenome}
-        onChangeText={(v) => handleChange("sobrenome", v)}
-      />
+          {/* Seção Administrador */}
+          <View style={styles.column8}>
+            <View style={styles.row4}>
+              <Image
+                source={{
+                  uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/slrqcmhh_expires_30_days.png",
+                }}
+                resizeMode={"stretch"}
+                style={styles.image3}
+              />
+              <Text style={styles.text5}>Dados do Administrador</Text>
+            </View>
 
-      <TextInput
-        placeholder="Email"
-        value={form.email}
-        onChangeText={(v) => handleChange("email", v)}
-      />
+            {/* Nome e Sobrenome */}
+            <View style={styles.row5}>
+              <View style={styles.column9}>
+                <View style={styles.view}>
+                  <Text style={styles.text6}>Nome *</Text>
+                </View>
+                <View style={styles.row2}>
+                  <Image
+                    source={{
+                      uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/1r3pg6r3_expires_30_days.png",
+                    }}
+                    resizeMode={"stretch"}
+                    style={styles.image4}
+                  />
+                  <TextInput
+                    placeholder="João"
+                    value={form.nome}
+                    onChangeText={(v) => handleChange("nome", v)}
+                    style={styles.input}
+                  />
+                </View>
+              </View>
 
-      <TextInput
-        placeholder="CPF"
-        value={form.cpf}
-        onChangeText={(v) => handleChange("cpf", v)}
-      />
+              <View style={styles.column10}>
+                <View style={styles.view}>
+                  <Text style={styles.text6}>Sobrenome *</Text>
+                </View>
+                <View style={styles.row2}>
+                  <Image
+                    source={{
+                      uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/fhyi9c7j_expires_30_days.png",
+                    }}
+                    resizeMode={"stretch"}
+                    style={styles.image4}
+                  />
+                  <TextInput
+                    placeholder="Silva"
+                    value={form.sobrenome}
+                    onChangeText={(v) => handleChange("sobrenome", v)}
+                    style={styles.input}
+                  />
+                </View>
+              </View>
+            </View>
 
-      <TextInput
-        placeholder="Telefone"
-        value={form.telefone}
-        onChangeText={(v) => handleChange("telefone", v)}
-      />
+            {/* E-mail */}
+            <View style={styles.column11}>
+              <View style={styles.view}>
+                <Text style={styles.text6}>E-mail *</Text>
+              </View>
+              <View style={styles.row2}>
+                <Image
+                  source={{
+                    uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/l5mar5yq_expires_30_days.png",
+                  }}
+                  resizeMode={"stretch"}
+                  style={styles.image4}
+                />
+                <TextInput
+                  placeholder="seuemail@exemplo.com"
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  value={form.email}
+                  onChangeText={(v) => handleChange("email", v)}
+                  style={styles.input}
+                />
+              </View>
+            </View>
 
-      <TextInput
-        placeholder="Senha"
-        value={form.senha}
-        secureTextEntry
-        onChangeText={(v) => handleChange("senha", v)}
-      />
+            {/* CPF */}
+            <View style={{ marginTop: 12 }}>
+              <View style={styles.view}>
+                <Text style={styles.text6}>CPF *</Text>
+              </View>
+              <View style={styles.row2}>
+                <Image
+                  source={{
+                    uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/h1xw418p_expires_30_days.png",
+                  }}
+                  resizeMode={"stretch"}
+                  style={styles.image4}
+                />
+                <TextInput
+                  placeholder="000.000.000-00"
+                  value={form.cpf}
+                  onChangeText={(v) => handleChange("cpf", v)}
+                  style={styles.input}
+                />
+              </View>
+            </View>
 
-      <Button
-        title={loading ? "Cadastrando..." : "Cadastrar"}
-        onPress={handleSubmit}
-        disabled={loading}
-      />
-    </ScrollView>
+            {/* Telefone */}
+            <View style={[styles.column11, { marginTop: 12 }]}>
+              <View style={styles.view}>
+                <Text style={styles.text6}>Telefone *</Text>
+              </View>
+              <View style={styles.row2}>
+                <Image
+                  source={{
+                    uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/60pd6c9q_expires_30_days.png",
+                  }}
+                  resizeMode={"stretch"}
+                  style={styles.image4}
+                />
+                <TextInput
+                  placeholder="(00) 00000-0000"
+                  value={form.telefone}
+                  onChangeText={(v) => handleChange("telefone", v)}
+                  style={styles.input}
+                />
+              </View>
+            </View>
+
+            {/* Senha */}
+            <View style={[styles.column11, { marginTop: 12 }]}>
+              <View style={styles.view}>
+                <Text style={styles.text6}>Senha *</Text>
+              </View>
+              <View style={styles.row2}>
+                <Image
+                  source={{
+                    uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/76zukml0_expires_30_days.png",
+                  }}
+                  resizeMode={"stretch"}
+                  style={styles.image4}
+                />
+                <TextInput
+                  placeholder="Mínimo 6 caracteres"
+                  secureTextEntry
+                  value={form.senha}
+                  onChangeText={(v) => handleChange("senha", v)}
+                  style={styles.input}
+                />
+              </View>
+            </View>
+
+            {/* Confirmar Senha */}
+            <View style={{ marginTop: 12 }}>
+              <View style={styles.view}>
+                <Text style={styles.text6}>Confirmar Senha *</Text>
+              </View>
+              <View style={styles.row2}>
+                <Image
+                  source={{
+                    uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/fywmwzm7_expires_30_days.png",
+                  }}
+                  resizeMode={"stretch"}
+                  style={styles.image4}
+                />
+                <TextInput
+                  placeholder="Repita sua senha"
+                  secureTextEntry
+                  value={form.confirmarSenha}
+                  onChangeText={(v) => handleChange("confirmarSenha", v)}
+                  style={styles.input}
+                />
+              </View>
+            </View>
+          </View>
+
+          {/* Botão Submeter */}
+          <TouchableOpacity
+            style={[styles.button4, { opacity: loading ? 0.6 : 1 }]}
+            onPress={handleSubmit}
+            disabled={loading}
+          >
+            <Text style={styles.text10}>
+              {loading ? "Cadastrando..." : "Cadastrar Academia"}
+            </Text>
+          </TouchableOpacity>
+
+          <Text style={styles.text11}>* Campos obrigatórios</Text>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }

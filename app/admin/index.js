@@ -1,13 +1,17 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useRouter } from "expo-router";
+import React from "react";
 import {
-  Alert,
+  View,
   ScrollView,
-  StyleSheet,
+  Image,
   Text,
   TouchableOpacity,
-  View,
+  Alert,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useRouter } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { styles } from "../../src/styles/style"; // Importando do arquivo de estilos unificado
 
 export default function AdminHome() {
   const router = useRouter();
@@ -21,7 +25,6 @@ export default function AdminHome() {
         onPress: async () => {
           await AsyncStorage.removeItem("token");
           await AsyncStorage.removeItem("tipo");
-
           router.replace("/setup/login");
         },
       },
@@ -29,111 +32,174 @@ export default function AdminHome() {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>Dashboard</Text>
+    <SafeAreaView style={styles.dashContainer}>
+      <ScrollView style={styles.dashScrollView}>
+        <View style={styles.dashColumn}>
+          <View style={styles.dashColumn2}>
+            {/* Header */}
+            <View style={styles.dashRow}>
+              <View style={styles.dashRow2}>
+                <Image
+                  source={{
+                    uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/5z41gpzy_expires_30_days.png",
+                  }}
+                  resizeMode={"stretch"}
+                  style={styles.dashImage}
+                />
+                <View style={styles.dashColumn3}>
+                  <View style={styles.dashView}>
+                    <Text style={styles.dashText}>FitPro Admin</Text>
+                  </View>
+                  <Text style={styles.dashText2}>Academia Premium</Text>
+                </View>
+              </View>
+              <View style={styles.dashRow2}>
+                <Image
+                  source={{
+                    uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/h4sy5l4e_expires_30_days.png",
+                  }}
+                  resizeMode={"stretch"}
+                  style={styles.dashImage2}
+                />
+                {/* Botão de Logout */}
+                <TouchableOpacity
+                  style={styles.dashGradientButton}
+                  onPress={handleLogout}
+                >
+                  <LinearGradient
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 0, y: 1 }}
+                    colors={["#00D492", "#009966"]}
+                    style={styles.dashGradientButton}
+                  >
+                    <Text style={styles.dashText3}>Sair</Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+              </View>
+            </View>
 
-      {/* Cards */}
-      <View style={styles.cardContainer}>
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Total de Alunos</Text>
-          <Text style={styles.cardValue}>0</Text>
+            {/* Títulos do Dashboard */}
+            <View style={styles.dashColumn4}>
+              <View style={styles.dashView2}>
+                <Text style={styles.dashText4}>Dashboard</Text>
+              </View>
+              <View>
+                <Text style={styles.dashText5}>Visão geral do sistema</Text>
+              </View>
+            </View>
+
+            {/* Grid de Cards de Estatísticas (Sem as porcentagens/indicadores) */}
+            <View style={styles.dashColumn5}>
+              <View style={styles.dashRow3}>
+                <View style={styles.dashCardColumn}>
+                  <View style={styles.dashRow4}>
+                    <Image
+                      source={{
+                        uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/884avt0g_expires_30_days.png",
+                      }}
+                      resizeMode={"stretch"}
+                      style={styles.dashImage3}
+                    />
+                  </View>
+                  <View style={styles.dashView3}>
+                    <Text style={styles.dashText5}>Total de Alunos</Text>
+                  </View>
+                  <View>
+                    <Text style={styles.dashText4}>0</Text>
+                  </View>
+                </View>
+
+                <View style={styles.dashCardColumn7}>
+                  <View style={styles.dashRow4}>
+                    <Image
+                      source={{
+                        uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/lh2arzmb_expires_30_days.png",
+                      }}
+                      resizeMode={"stretch"}
+                      style={styles.dashImage3}
+                    />
+                  </View>
+                  <View style={styles.dashView3}>
+                    <Text style={styles.dashText5}>Funcionários</Text>
+                  </View>
+                  <View>
+                    <Text style={styles.dashText4}>0</Text>
+                  </View>
+                </View>
+              </View>
+
+              <View style={styles.dashRow6}>
+                <View style={styles.dashCardColumn}>
+                  <View style={styles.dashRow4}>
+                    <Image
+                      source={{
+                        uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/dcauhslj_expires_30_days.png",
+                      }}
+                      resizeMode={"stretch"}
+                      style={styles.dashImage3}
+                    />
+                  </View>
+                  <View style={styles.dashView3}>
+                    <Text style={styles.dashText5}>Ativos</Text>
+                  </View>
+                  <View>
+                    <Text style={styles.dashText4}>0</Text>
+                  </View>
+                </View>
+
+                <View style={styles.dashCardColumn7}>
+                  <View style={styles.dashRow4}>
+                    <Image
+                      source={{
+                        uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/narmku18_expires_30_days.png",
+                      }}
+                      resizeMode={"stretch"}
+                      style={styles.dashImage3}
+                    />
+                  </View>
+                  <View style={styles.dashView3}>
+                    <Text style={styles.dashText5}>Inativos</Text>
+                  </View>
+                  <View>
+                    <Text style={styles.dashText4}>0</Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+          </View>
         </View>
 
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Funcionários</Text>
-          <Text style={styles.cardValue}>0</Text>
+        {/* Menu de Ações/Navegação inferior */}
+        <View style={styles.dashRow13}>
+          <TouchableOpacity
+            style={styles.dashActionTab}
+            onPress={() => router.push("/admin/create-user")}
+          >
+            <Image
+              source={{
+                uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/1ni9ocgr_expires_30_days.png",
+              }}
+              resizeMode={"stretch"}
+              style={styles.dashImage7}
+            />
+            <Text style={styles.dashActionTabTextActive}>Criar Usuário</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.dashActionTab}
+            onPress={() => router.push("/admin/users")}
+          >
+            <Image
+              source={{
+                uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/yqwdmunc_expires_30_days.png",
+              }}
+              resizeMode={"stretch"}
+              style={styles.dashImage7}
+            />
+            <Text style={styles.dashActionTabText}>Listar Usuários</Text>
+          </TouchableOpacity>
         </View>
-
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Ativos</Text>
-          <Text style={styles.cardValue}>0</Text>
-        </View>
-
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Inativos</Text>
-          <Text style={styles.cardValue}>0</Text>
-        </View>
-      </View>
-
-      {/* Ações */}
-      <Text style={styles.subtitle}>Ações</Text>
-
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => router.push("/admin/create-user")}
-      >
-        <Text style={styles.buttonText}>Criar usuário</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => router.push("/admin/users")}
-      >
-        <Text style={styles.buttonText}>Listar usuários</Text>
-      </TouchableOpacity>
-
-      {/* LOGOUT */}
-      <TouchableOpacity
-        style={[styles.button, { backgroundColor: "#ef4444", marginTop: 20 }]}
-        onPress={handleLogout}
-      >
-        <Text style={styles.buttonText}>Sair da conta</Text>
-      </TouchableOpacity>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-  },
-
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-  },
-
-  cardContainer: {
-    marginBottom: 20,
-  },
-
-  card: {
-    backgroundColor: "#fff",
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 10,
-    elevation: 2,
-  },
-
-  cardTitle: {
-    fontSize: 14,
-    color: "#666",
-  },
-
-  cardValue: {
-    fontSize: 22,
-    fontWeight: "bold",
-    marginTop: 5,
-  },
-
-  subtitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
-
-  button: {
-    backgroundColor: "#2563eb",
-    padding: 15,
-    borderRadius: 8,
-    marginBottom: 10,
-  },
-
-  buttonText: {
-    color: "#fff",
-    textAlign: "center",
-    fontWeight: "bold",
-  },
-});

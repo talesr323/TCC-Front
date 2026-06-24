@@ -1,8 +1,20 @@
-import * as Linking from "expo-linking";
+import React, { useState } from "react";
+import {
+  View,
+  ScrollView,
+  Text,
+  Image,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+  ActivityIndicator,
+} from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
-import { useState } from "react";
-import { Alert, Button, Text, TextInput, View } from "react-native";
-import api from "../src/services/api";
+import { LinearGradient } from "expo-linear-gradient";
+import { SafeAreaView } from "react-native-safe-area-context";
+import api from "../../src/services/api";
+import { styles } from "../../src/styles/style"; // Importando do arquivo unificado de estilos
 
 export default function CreateUser() {
   const router = useRouter();
@@ -11,8 +23,8 @@ export default function CreateUser() {
     email: "",
     nome: "",
     cpf: "",
-    telefone: "", // 🔥 NOVO
-    tipo: "PROFESSOR",
+    telefone: "",
+    tipo: "PROFESSOR", // PROFESSOR ou ALUNO
     cref: "",
   });
 
@@ -21,42 +33,53 @@ export default function CreateUser() {
   const criar = async () => {
     if (loading) return;
 
+    // Validação básica antes de enviar
+    if (!form.nome || !form.email || !form.cpf || !form.telefone) {
+      Alert.alert("Erro", "Por favor, preencha todos os campos obrigatórios.");
+      return;
+    }
+
+    if (form.tipo === "PROFESSOR" && !form.cref) {
+      Alert.alert("Erro", "Por favor, preencha o CREF do professor.");
+      return;
+    }
+
     try {
       setLoading(true);
 
       const payload = {
-        ...form,
-        ...(form.tipo === "ALUNO" ? { cref: undefined } : {}),
+        nome: form.nome,
+        email: form.email,
+        cpf: form.cpf,
+        telefone: form.telefone,
+        tipo: form.tipo,
+        ...(form.tipo === "PROFESSOR" ? { cref: form.cref } : {}),
       };
 
-      const { data } = await api.post("/usuarios", payload);
+      const tokenLogin = await AsyncStorage.getItem("token");
 
-      console.log("USUÁRIO CRIADO:", data);
+      if (!tokenLogin) {
+        Alert.alert(
+          "Erro",
+          "Token de login não encontrado. Faça login novamente.",
+        );
+        return;
+      }
 
-      const token = data.token;
+      await api.post("/usuarios", payload, {
+        headers: {
+          Authorization: `Bearer ${tokenLogin}`,
+        },
+      });
 
-      // 🔥 monta mensagem
-      const mensagem = `Olá ${form.nome}!\n\nSeu cadastro foi criado.\nAtive sua conta pelo token:\n${token}`;
-
-      // 🔥 remove caracteres do telefone (importante)
-      const telefone = form.telefone.replace(/\D/g, "");
-
-      // 🔥 URL do WhatsApp
-      const url = `https://wa.me/55${telefone}?text=${encodeURIComponent(mensagem)}`;
-
-      // 🔥 abre WhatsApp
-      await Linking.openURL(url);
-
-      Alert.alert("Sucesso", "Usuário criado e WhatsApp aberto!");
-
-      router.replace("/admin");
-
+      Alert.alert("Sucesso", "Usuário criado com sucesso!", [
+        { text: "OK", onPress: () => router.replace("/admin") },
+      ]);
     } catch (error) {
-      console.log("ERRO:", error.response?.data || error.message);
-
+      console.error(error);
       Alert.alert(
         "Erro",
-        error.response?.data?.error || "Erro ao criar usuário"
+        "Não foi possível criar o usuário. Verifique os dados.",
       );
     } finally {
       setLoading(false);
@@ -64,63 +87,186 @@ export default function CreateUser() {
   };
 
   return (
-    <View style={{ padding: 20 }}>
-      <Text style={{ fontSize: 20, marginBottom: 10 }}>
-        Criar Usuário
-      </Text>
+    <SafeAreaView style={styles.cadContainer}>
+      <ScrollView style={styles.cadScrollView}>
+        {/* Header / Navegação superior */}
+        <View style={styles.cadRow}>
+          <TouchableOpacity onPress={() => router.push("/admin")}>
+            <Text style={styles.cadTextHeaderLink}>Dashboard</Text>
+          </TouchableOpacity>
+          <View style={styles.cadRow2}>
+            <Image
+              source={{
+                uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/txcv988i_expires_30_days.png",
+              }}
+              resizeMode={"stretch"}
+              style={styles.cadImageHeaderArrow}
+            />
+            <Text style={styles.cadTextHeaderActive}>Usuários</Text>
+          </View>
+        </View>
 
-      <TextInput
-        placeholder="Email"
-        onChangeText={(v) => setForm({ ...form, email: v })}
-        style={{ borderWidth: 1, marginBottom: 10, padding: 8 }}
-        autoCapitalize="none"
-      />
+        {/* Título da tela */}
+        <View style={styles.cadViewTitle}>
+          <Text style={styles.cadTextMainTitle}>Criar novo usuário</Text>
+          <Text style={styles.cadTextSubtitle}>
+            Insira as informações do novo membro
+          </Text>
+        </View>
 
-      <TextInput
-        placeholder="Nome"
-        onChangeText={(v) => setForm({ ...form, nome: v })}
-        style={{ borderWidth: 1, marginBottom: 10, padding: 8 }}
-      />
+        {/* Campo: Nome Completo */}
+        <View style={styles.cadInputWrapperRow}>
+          <Image
+            source={{
+              uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/0m0as87x_expires_30_days.png",
+            }}
+            resizeMode={"stretch"}
+            style={styles.cadInputIcon}
+          />
+          <TextInput
+            placeholder={"Nome Completo"}
+            placeholderTextColor={"#717182"}
+            value={form.nome}
+            onChangeText={(v) => setForm({ ...form, nome: v })}
+            style={styles.cadTextInput}
+          />
+        </View>
 
-      <TextInput
-        placeholder="CPF"
-        onChangeText={(v) => setForm({ ...form, cpf: v })}
-        style={{ borderWidth: 1, marginBottom: 10, padding: 8 }}
-      />
+        {/* Campo: E-mail */}
+        <View style={styles.cadInputWrapperRow}>
+          <Image
+            source={{
+              uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/0clx8r9h_expires_30_days.png",
+            }}
+            resizeMode={"stretch"}
+            style={styles.cadInputIcon}
+          />
+          <TextInput
+            placeholder={"E-mail corporativo ou pessoal"}
+            placeholderTextColor={"#717182"}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            value={form.email}
+            onChangeText={(v) => setForm({ ...form, email: v })}
+            style={styles.cadTextInput}
+          />
+        </View>
 
-      {/* 🔥 NOVO TELEFONE */}
-      <TextInput
-        placeholder="Telefone (DDD + número)"
-        onChangeText={(v) => setForm({ ...form, telefone: v })}
-        style={{ borderWidth: 1, marginBottom: 10, padding: 8 }}
-        keyboardType="phone-pad"
-      />
+        {/* Campo: CPF */}
+        <View style={styles.cadInputWrapperRow}>
+          <Image
+            source={{
+              uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/z098d575_expires_30_days.png",
+            }}
+            resizeMode={"stretch"}
+            style={styles.cadInputIcon}
+          />
+          <TextInput
+            placeholder={"CPF (somente números)"}
+            placeholderTextColor={"#717182"}
+            keyboardType="numeric"
+            value={form.cpf}
+            onChangeText={(v) => setForm({ ...form, cpf: v })}
+            style={styles.cadTextInput}
+          />
+        </View>
 
-      <Text style={{ marginBottom: 5 }}>Tipo:</Text>
+        {/* Campo: Telefone */}
+        <View style={styles.cadInputWrapperRow}>
+          <Image
+            source={{
+              uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/9itd003p_expires_30_days.png",
+            }}
+            resizeMode={"stretch"}
+            style={styles.cadInputIcon}
+          />
+          <TextInput
+            placeholder={"Telefone (DDD + número)"}
+            placeholderTextColor={"#717182"}
+            keyboardType="phone-pad"
+            value={form.telefone}
+            onChangeText={(v) => setForm({ ...form, telefone: v })}
+            style={styles.cadTextInput}
+          />
+        </View>
 
-      <Button
-        title={form.tipo === "PROFESSOR" ? "✔ Professor" : "Professor"}
-        onPress={() => setForm({ ...form, tipo: "PROFESSOR" })}
-      />
+        {/* Seletor de Tipo (Professor / Aluno) */}
+        <View style={styles.cadRowTypeSelector}>
+          <TouchableOpacity
+            style={[
+              styles.cadTypeOptionButton,
+              form.tipo === "PROFESSOR" && styles.cadTypeOptionActive,
+            ]}
+            onPress={() => setForm({ ...form, tipo: "PROFESSOR" })}
+          >
+            <Text
+              style={[
+                styles.cadTextTypeLabel,
+                form.tipo === "PROFESSOR" && styles.cadTextTypeLabelActive,
+              ]}
+            >
+              Professor
+            </Text>
+          </TouchableOpacity>
 
-      <Button
-        title={form.tipo === "ALUNO" ? "✔ Aluno" : "Aluno"}
-        onPress={() => setForm({ ...form, tipo: "ALUNO" })}
-      />
+          <TouchableOpacity
+            style={[
+              styles.cadTypeOptionButton,
+              form.tipo === "ALUNO" && styles.cadTypeOptionActive,
+            ]}
+            onPress={() => setForm({ ...form, tipo: "ALUNO", cref: "" })}
+          >
+            <Text
+              style={[
+                styles.cadTextTypeLabel,
+                form.tipo === "ALUNO" && styles.cadTextTypeLabelActive,
+              ]}
+            >
+              Aluno
+            </Text>
+          </TouchableOpacity>
+        </View>
 
-      {form.tipo === "PROFESSOR" && (
-        <TextInput
-          placeholder="CREF"
-          onChangeText={(v) => setForm({ ...form, cref: v })}
-          style={{ borderWidth: 1, marginBottom: 10, padding: 8 }}
-        />
-      )}
+        {/* Campo Dinâmico: CREF (Exibido apenas se for Professor) */}
+        {form.tipo === "PROFESSOR" && (
+          <View style={styles.cadInputWrapperRow}>
+            <Image
+              source={{
+                uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/z098d575_expires_30_days.png",
+              }} // Reutilizando ícone de documento
+              resizeMode={"stretch"}
+              style={styles.cadInputIcon}
+            />
+            <TextInput
+              placeholder={"Registro CREF"}
+              placeholderTextColor={"#717182"}
+              value={form.cref}
+              onChangeText={(v) => setForm({ ...form, cref: v })}
+              style={styles.cadTextInput}
+            />
+          </View>
+        )}
 
-      <Button
-        title={loading ? "Criando..." : "Criar"}
-        onPress={criar}
-        disabled={loading}
-      />
-    </View>
+        {/* Botão de Envio com Gradiente */}
+        <TouchableOpacity
+          style={styles.cadSubmitButtonContainer}
+          onPress={criar}
+          disabled={loading}
+        >
+          <LinearGradient
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            colors={["#00C951", "#009966"]}
+            style={styles.cadSubmitGradient}
+          >
+            {loading ? (
+              <ActivityIndicator color="#FFFFFF" />
+            ) : (
+              <Text style={styles.cadTextSubmitButton}>Salvar Usuário</Text>
+            )}
+          </LinearGradient>
+        </TouchableOpacity>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
