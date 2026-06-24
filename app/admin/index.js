@@ -1,17 +1,14 @@
-import React from "react";
-import {
-  View,
-  ScrollView,
-  Image,
-  Text,
-  TouchableOpacity,
-  Alert,
-} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
-import { LinearGradient } from "expo-linear-gradient";
+import {
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { styles } from "../../src/styles/style"; // Importando do arquivo de estilos unificado
 
 export default function AdminHome() {
   const router = useRouter();
@@ -32,174 +29,252 @@ export default function AdminHome() {
   };
 
   return (
-    <SafeAreaView style={styles.dashContainer}>
-      <ScrollView style={styles.dashScrollView}>
-        <View style={styles.dashColumn}>
-          <View style={styles.dashColumn2}>
-            {/* Header */}
-            <View style={styles.dashRow}>
-              <View style={styles.dashRow2}>
-                <Image
-                  source={{
-                    uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/5z41gpzy_expires_30_days.png",
-                  }}
-                  resizeMode={"stretch"}
-                  style={styles.dashImage}
-                />
-                <View style={styles.dashColumn3}>
-                  <View style={styles.dashView}>
-                    <Text style={styles.dashText}>FitPro Admin</Text>
-                  </View>
-                  <Text style={styles.dashText2}>Academia Premium</Text>
-                </View>
-              </View>
-              <View style={styles.dashRow2}>
-                <Image
-                  source={{
-                    uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/h4sy5l4e_expires_30_days.png",
-                  }}
-                  resizeMode={"stretch"}
-                  style={styles.dashImage2}
-                />
-                {/* Botão de Logout */}
-                <TouchableOpacity
-                  style={styles.dashGradientButton}
-                  onPress={handleLogout}
-                >
-                  <LinearGradient
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 0, y: 1 }}
-                    colors={["#00D492", "#009966"]}
-                    style={styles.dashGradientButton}
-                  >
-                    <Text style={styles.dashText3}>Sair</Text>
-                  </LinearGradient>
-                </TouchableOpacity>
-              </View>
+    <SafeAreaView style={styles.container}>
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+        <View style={styles.header}>
+          <View style={styles.logoBox}>
+            <Text style={styles.logoText}>▣</Text>
+          </View>
+
+          <View style={styles.headerTextBox}>
+            <Text style={styles.appTitle}>FitPro Admin</Text>
+            <Text style={styles.appSubtitle}>Academia Premium</Text>
+          </View>
+
+          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+            <Text style={styles.logoutText}>Sair</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.titleBox}>
+          <Text style={styles.title}>Dashboard</Text>
+          <Text style={styles.subtitle}>Visão geral do sistema</Text>
+        </View>
+
+        <View style={styles.grid}>
+          <View style={styles.card}>
+            <View style={styles.iconCircle}>
+              <Text style={styles.icon}>♙</Text>
             </View>
+            <Text style={styles.cardLabel}>Total de Alunos</Text>
+            <Text style={styles.cardValue}>0</Text>
+          </View>
 
-            {/* Títulos do Dashboard */}
-            <View style={styles.dashColumn4}>
-              <View style={styles.dashView2}>
-                <Text style={styles.dashText4}>Dashboard</Text>
-              </View>
-              <View>
-                <Text style={styles.dashText5}>Visão geral do sistema</Text>
-              </View>
+          <View style={styles.card}>
+            <View style={styles.iconCircle}>
+              <Text style={styles.icon}>☷</Text>
             </View>
+            <Text style={styles.cardLabel}>Funcionários</Text>
+            <Text style={styles.cardValue}>0</Text>
+          </View>
 
-            {/* Grid de Cards de Estatísticas (Sem as porcentagens/indicadores) */}
-            <View style={styles.dashColumn5}>
-              <View style={styles.dashRow3}>
-                <View style={styles.dashCardColumn}>
-                  <View style={styles.dashRow4}>
-                    <Image
-                      source={{
-                        uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/884avt0g_expires_30_days.png",
-                      }}
-                      resizeMode={"stretch"}
-                      style={styles.dashImage3}
-                    />
-                  </View>
-                  <View style={styles.dashView3}>
-                    <Text style={styles.dashText5}>Total de Alunos</Text>
-                  </View>
-                  <View>
-                    <Text style={styles.dashText4}>0</Text>
-                  </View>
-                </View>
-
-                <View style={styles.dashCardColumn7}>
-                  <View style={styles.dashRow4}>
-                    <Image
-                      source={{
-                        uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/lh2arzmb_expires_30_days.png",
-                      }}
-                      resizeMode={"stretch"}
-                      style={styles.dashImage3}
-                    />
-                  </View>
-                  <View style={styles.dashView3}>
-                    <Text style={styles.dashText5}>Funcionários</Text>
-                  </View>
-                  <View>
-                    <Text style={styles.dashText4}>0</Text>
-                  </View>
-                </View>
-              </View>
-
-              <View style={styles.dashRow6}>
-                <View style={styles.dashCardColumn}>
-                  <View style={styles.dashRow4}>
-                    <Image
-                      source={{
-                        uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/dcauhslj_expires_30_days.png",
-                      }}
-                      resizeMode={"stretch"}
-                      style={styles.dashImage3}
-                    />
-                  </View>
-                  <View style={styles.dashView3}>
-                    <Text style={styles.dashText5}>Ativos</Text>
-                  </View>
-                  <View>
-                    <Text style={styles.dashText4}>0</Text>
-                  </View>
-                </View>
-
-                <View style={styles.dashCardColumn7}>
-                  <View style={styles.dashRow4}>
-                    <Image
-                      source={{
-                        uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/narmku18_expires_30_days.png",
-                      }}
-                      resizeMode={"stretch"}
-                      style={styles.dashImage3}
-                    />
-                  </View>
-                  <View style={styles.dashView3}>
-                    <Text style={styles.dashText5}>Inativos</Text>
-                  </View>
-                  <View>
-                    <Text style={styles.dashText4}>0</Text>
-                  </View>
-                </View>
-              </View>
+          <View style={styles.card}>
+            <View style={styles.iconCircle}>
+              <Text style={styles.icon}>✓</Text>
             </View>
+            <Text style={styles.cardLabel}>Ativos</Text>
+            <Text style={styles.cardValue}>0</Text>
+          </View>
+
+          <View style={styles.card}>
+            <View style={styles.iconCircle}>
+              <Text style={styles.icon}>!</Text>
+            </View>
+            <Text style={styles.cardLabel}>Inativos</Text>
+            <Text style={styles.cardValue}>0</Text>
           </View>
         </View>
 
-        {/* Menu de Ações/Navegação inferior */}
-        <View style={styles.dashRow13}>
+        <View style={styles.actionsCard}>
+          <Text style={styles.sectionTitle}>Ações rápidas</Text>
+
           <TouchableOpacity
-            style={styles.dashActionTab}
+            style={styles.actionButton}
             onPress={() => router.push("/admin/create-user")}
           >
-            <Image
-              source={{
-                uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/1ni9ocgr_expires_30_days.png",
-              }}
-              resizeMode={"stretch"}
-              style={styles.dashImage7}
-            />
-            <Text style={styles.dashActionTabTextActive}>Criar Usuário</Text>
+            <Text style={styles.actionIcon}>＋</Text>
+            <Text style={styles.actionText}>Criar Usuário</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={styles.dashActionTab}
+            style={styles.actionButtonSecondary}
             onPress={() => router.push("/admin/users")}
           >
-            <Image
-              source={{
-                uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/yqwdmunc_expires_30_days.png",
-              }}
-              resizeMode={"stretch"}
-              style={styles.dashImage7}
-            />
-            <Text style={styles.dashActionTabText}>Listar Usuários</Text>
+            <Text style={styles.actionIconSecondary}>☰</Text>
+            <Text style={styles.actionTextSecondary}>Listar Usuários</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#F5F6F8",
+  },
+  scrollView: {
+    flex: 1,
+    paddingHorizontal: 22,
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingTop: 18,
+    paddingBottom: 20,
+  },
+  logoBox: {
+    width: 46,
+    height: 46,
+    borderRadius: 12,
+    backgroundColor: "#00C853",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 12,
+  },
+  logoText: {
+    color: "#FFFFFF",
+    fontSize: 24,
+    fontWeight: "700",
+  },
+  headerTextBox: {
+    flex: 1,
+  },
+  appTitle: {
+    fontSize: 18,
+    color: "#1F2937",
+    fontWeight: "700",
+  },
+  appSubtitle: {
+    fontSize: 12,
+    color: "#6B7280",
+    marginTop: 2,
+  },
+  logoutButton: {
+    backgroundColor: "#00C853",
+    paddingHorizontal: 16,
+    height: 38,
+    borderRadius: 9,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  logoutText: {
+    color: "#FFFFFF",
+    fontSize: 12,
+    fontWeight: "700",
+  },
+  titleBox: {
+    marginBottom: 18,
+  },
+  title: {
+    fontSize: 26,
+    color: "#1F2937",
+    fontWeight: "700",
+  },
+  subtitle: {
+    fontSize: 13,
+    color: "#6B7280",
+    marginTop: 4,
+  },
+  grid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    marginBottom: 18,
+  },
+  card: {
+    width: "48%",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 18,
+    padding: 16,
+    marginBottom: 14,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 6 },
+    elevation: 5,
+  },
+  iconCircle: {
+    width: 38,
+    height: 38,
+    borderRadius: 12,
+    backgroundColor: "#E9FFF5",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 12,
+  },
+  icon: {
+    color: "#00C853",
+    fontSize: 20,
+    fontWeight: "700",
+  },
+  cardLabel: {
+    fontSize: 12,
+    color: "#6B7280",
+    marginBottom: 6,
+  },
+  cardValue: {
+    fontSize: 26,
+    color: "#1F2937",
+    fontWeight: "700",
+  },
+  actionsCard: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 18,
+    padding: 18,
+    marginBottom: 30,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 6 },
+    elevation: 5,
+  },
+  sectionTitle: {
+    fontSize: 14,
+    color: "#374151",
+    fontWeight: "700",
+    marginBottom: 14,
+  },
+  actionButton: {
+    height: 46,
+    borderRadius: 10,
+    backgroundColor: "#00C853",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 10,
+  },
+  actionIcon: {
+    color: "#FFFFFF",
+    fontSize: 18,
+    fontWeight: "700",
+    marginRight: 8,
+  },
+  actionText: {
+    color: "#FFFFFF",
+    fontSize: 13,
+    fontWeight: "700",
+  },
+  actionButtonSecondary: {
+    height: 46,
+    borderRadius: 10,
+    backgroundColor: "#F9FAFB",
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  actionIconSecondary: {
+    color: "#00C853",
+    fontSize: 16,
+    fontWeight: "700",
+    marginRight: 8,
+  },
+  actionTextSecondary: {
+    color: "#374151",
+    fontSize: 13,
+    fontWeight: "700",
+  },
+});

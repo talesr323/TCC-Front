@@ -1,331 +1,280 @@
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
-  // --- ESTILOS ORIGINAIS DO style (INALTERADOS) ---
   container: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#F5F6F8",
   },
-  button: {
-    backgroundColor: "#F0FDF4",
-    borderRadius: 26843500,
-    paddingVertical: 3,
-    paddingHorizontal: 12,
+
+  scrollView: {
+    flex: 1,
   },
-  button4: {
-    alignSelf: "stretch",
-    alignItems: "center",
-    backgroundColor: "#00C950",
-    borderRadius: 14,
-    paddingVertical: 15,
-    marginBottom: 36,
-    marginHorizontal: 24,
-    shadowColor: "#0000001A",
-    shadowOpacity: 0.1,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowRadius: 4,
-    elevation: 4,
-  },
+
   column: {
     alignItems: "center",
-    marginBottom: 32,
-  },
-  column2: {
-    alignItems: "center",
-    backgroundColor: "#FFFFFF",
-    borderRadius: 24,
-    paddingVertical: 24,
-    shadowColor: "#0000001A",
-    shadowOpacity: 0.1,
   },
 
-  // --- ESTILOS ADICIONADOS DO DASHBOARDADMREACT.JS (MIGRADO E SIMPLIFICADO) ---
-  dashContainer: {
-    flex: 1,
-    backgroundColor: "#FFFFFF",
-  },
-  dashGradientButton: {
-    borderRadius: 20,
-    paddingVertical: 5,
-    paddingHorizontal: 12,
+  logoIcon: {
+    width: 46,
+    height: 46,
+    borderRadius: 12,
+    backgroundColor: "#00C853",
+    alignItems: "center",
     justifyContent: "center",
-    alignItems: "center",
+    marginTop: 22,
+    marginBottom: 10,
+    shadowColor: "#00C853",
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
+    elevation: 4,
   },
-  dashColumn: {
-    marginBottom: 20,
+
+  logoIconText: {
+    color: "#FFFFFF",
+    fontSize: 24,
+    fontWeight: "700",
   },
-  dashColumn2: {
-    backgroundColor: "#FFFFFF",
-    paddingBottom: 20,
-  },
-  dashColumn3: {
-    alignItems: "flex-start",
-  },
-  dashColumn4: {
-    marginBottom: 19,
-    marginHorizontal: 15,
-  },
-  dashColumn5: {
-    marginHorizontal: 16,
-  },
-  dashCardColumn: {
-    flex: 1,
-    backgroundColor: "#FFFFFF",
-    borderColor: "#E5E7EB",
-    borderRadius: 14,
-    borderWidth: 1,
-    paddingVertical: 14,
-    paddingHorizontal: 17,
-    marginRight: 13,
-    shadowColor: "#0000001A",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 1 },
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  dashCardColumn7: {
-    flex: 1,
-    backgroundColor: "#FFFFFF",
-    borderColor: "#E5E7EB",
-    borderRadius: 14,
-    borderWidth: 1,
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    shadowColor: "#0000001A",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 1 },
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  dashActionTab: {
-    alignItems: "center",
-    borderRadius: 14,
-    padding: 10,
-  },
-  dashImage: {
-    width: 39,
-    height: 39,
-    marginRight: 12,
-  },
-  dashImage2: {
-    width: 35,
-    height: 35,
-    marginRight: 9,
-  },
-  dashImage3: {
-    width: 35,
-    height: 35,
-  },
-  dashImage7: {
-    borderRadius: 14,
-    width: 24,
-    height: 24,
+
+  text: {
+    fontSize: 24,
+    color: "#1F2937",
+    fontWeight: "500",
     marginBottom: 4,
   },
-  dashRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    backgroundColor: "#FFFFFF",
-    paddingTop: 11,
-    paddingBottom: 12,
-    paddingHorizontal: 15,
-    marginBottom: 16,
-  },
-  dashRow2: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  dashRow3: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 13,
-  },
-  dashRow4: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+
+  text2: {
+    fontSize: 12,
+    color: "#6B7280",
     marginBottom: 8,
   },
-  dashRow6: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 12,
-  },
-  dashRow13: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
-    backgroundColor: "#FFFFFF",
-    paddingVertical: 12,
-    borderTopWidth: 1,
-    borderTopColor: "#E5E7EB",
-    marginTop: 20,
-  },
-  dashScrollView: {
-    flex: 1,
-    backgroundColor: "#FFFFFF",
-  },
-  dashText: {
-    color: "#101828",
-    fontSize: 14,
-    fontWeight: "bold",
-  },
-  dashText2: {
-    color: "#6A7282",
-    fontSize: 12,
-  },
-  dashText3: {
-    color: "#FFFFFF",
-    fontSize: 12,
-    fontWeight: "bold",
-  },
-  dashText4: {
-    color: "#101828",
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  dashText5: {
-    color: "#4A5565",
-    fontSize: 12,
-  },
-  dashActionTabText: {
-    color: "#6A7282",
-    fontSize: 12,
-  },
-  dashActionTabTextActive: {
-    color: "#009966",
-    fontSize: 12,
-    fontWeight: "bold",
-  },
-  dashView: {
-    paddingRight: 17,
-  },
-  dashView2: {
-    marginBottom: 4,
-  },
-  dashView3: {
-    marginBottom: 7,
+
+  button: {
+    backgroundColor: "transparent",
+    marginBottom: 24,
   },
 
-  // --- ESTILOS ADICIONADOS DO CADASTROUSUARIOREACT.JS (MIGRADO) ---
-  cadContainer: {
-    flex: 1,
+  text3: {
+    fontSize: 12,
+    color: "#00C853",
+    fontWeight: "600",
+  },
+
+  column2: {
     backgroundColor: "#FFFFFF",
-  },
-  cadScrollView: {
-    flex: 1,
-    backgroundColor: "#FFFFFF",
-    paddingVertical: 20,
-    paddingHorizontal: 15,
-  },
-  cadRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 25,
-  },
-  cadRow2: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  cadTextHeaderLink: {
-    color: "#717182",
-    fontSize: 16,
-    marginRight: 9,
-  },
-  cadTextHeaderActive: {
-    color: "#717182",
-    fontSize: 16,
-  },
-  cadImageHeaderArrow: {
-    width: 6,
-    height: 11,
-    marginRight: 11,
-  },
-  cadViewTitle: {
+    marginHorizontal: 28,
+    borderRadius: 18,
+    paddingHorizontal: 18,
+    paddingTop: 26,
+    paddingBottom: 26,
     marginBottom: 30,
+    shadowColor: "#000",
+    shadowOpacity: 0.13,
+    shadowRadius: 14,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 6,
   },
-  cadTextMainTitle: {
-    color: "#0A0A0A",
-    fontSize: 28,
-    fontWeight: "bold",
-    marginBottom: 6,
-  },
-  cadTextSubtitle: {
-    color: "#717182",
-    fontSize: 14,
-  },
-  cadInputWrapperRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#F3F3F5",
-    borderRadius: 14,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    marginBottom: 16,
-  },
-  cadInputIcon: {
-    width: 18,
-    height: 18,
-    marginRight: 14,
-  },
-  cadTextInput: {
-    flex: 1,
-    color: "#0A0A0A",
-    fontSize: 15,
-  },
-  cadRowTypeSelector: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    backgroundColor: "#F3F3F5",
-    borderRadius: 14,
-    padding: 6,
-    marginBottom: 20,
-  },
-  cadTypeOptionButton: {
-    flex: 1,
-    alignItems: "center",
-    paddingVertical: 12,
-    borderRadius: 10,
-  },
-  cadTypeOptionActive: {
-    backgroundColor: "#FFFFFF",
-    shadowColor: "#000000",
-    shadowOpacity: 0.05,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  cadTextTypeLabel: {
-    color: "#717182",
-    fontSize: 15,
-    fontWeight: "500",
-  },
-  cadTextTypeLabelActive: {
-    color: "#0A0A0A",
-    fontWeight: "bold",
-  },
-  cadSubmitButtonContainer: {
-    marginTop: 15,
-    marginBottom: 40,
-    borderRadius: 14,
-    overflow: "hidden",
-  },
-  cadSubmitGradient: {
-    paddingVertical: 16,
+
+  avatarCircle: {
+    width: 62,
+    height: 62,
+    borderRadius: 31,
+    backgroundColor: "#F1F5F9",
     alignItems: "center",
     justifyContent: "center",
+    marginBottom: 8,
+    position: "relative",
   },
-  cadTextSubmitButton: {
+
+  avatarIcon: {
+    fontSize: 24,
+    color: "#94A3B8",
+  },
+
+  plusBadge: {
+    position: "absolute",
+    right: 0,
+    bottom: 2,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: "#00C853",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 2,
+    borderColor: "#FFFFFF",
+  },
+
+  plusText: {
     color: "#FFFFFF",
-    fontSize: 16,
-    fontWeight: "bold",
+    fontSize: 13,
+    fontWeight: "700",
+    marginTop: -1,
+  },
+
+  text4: {
+    fontSize: 11,
+    color: "#6B7280",
+    marginBottom: 22,
+  },
+
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 14,
+  },
+
+  row4: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 14,
+    marginTop: 4,
+  },
+
+  sectionIcon: {
+    fontSize: 13,
+    marginRight: 6,
+    color: "#94A3B8",
+  },
+
+  text5: {
+    fontSize: 12,
+    color: "#4B5563",
+    fontWeight: "500",
+  },
+
+  column3: {
+    marginBottom: 12,
+  },
+
+  column4: {
+    marginBottom: 12,
+  },
+
+  view: {
+    marginBottom: 5,
+  },
+
+  text6: {
+    fontSize: 11,
+    color: "#374151",
+  },
+
+  text7: {
+    fontSize: 11,
+    color: "#374151",
+    marginBottom: 5,
+  },
+
+  text9: {
+    fontSize: 11,
+    color: "#374151",
+    marginBottom: 5,
+  },
+
+  required: {
+    color: "#00C853",
+  },
+
+  row2: {
+    flexDirection: "row",
+    alignItems: "center",
+    height: 42,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+    backgroundColor: "#F9FAFB",
+    borderRadius: 9,
+    paddingHorizontal: 10,
+  },
+
+  inputIcon: {
+    fontSize: 14,
+    color: "#9CA3AF",
+    marginRight: 8,
+  },
+
+  input: {
+    flex: 1,
+    height: 42,
+    fontSize: 12,
+    color: "#111827",
+    padding: 0,
+  },
+
+  row3: {
+    flexDirection: "row",
+    gap: 10,
+    marginBottom: 18,
+  },
+
+  column5: {
+    flex: 1,
+  },
+
+  column6: {
+    flex: 1.3,
+  },
+
+  column7: {
+    width: 58,
+  },
+
+  input2: {
+    height: 42,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+    backgroundColor: "#F9FAFB",
+    borderRadius: 9,
+    paddingHorizontal: 10,
+    fontSize: 12,
+    color: "#111827",
+  },
+
+  column8: {
+    marginTop: 2,
+  },
+
+  row5: {
+    flexDirection: "row",
+    gap: 10,
+    marginBottom: 12,
+  },
+
+  column9: {
+    flex: 1,
+  },
+
+  column10: {
+    flex: 1,
+  },
+
+  column11: {
+    marginBottom: 0,
+  },
+
+  button4: {
+    height: 46,
+    borderRadius: 9,
+    backgroundColor: "#00C853",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 24,
+    shadowColor: "#00C853",
+    shadowOpacity: 0.28,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 5 },
+    elevation: 4,
+  },
+
+  text10: {
+    color: "#FFFFFF",
+    fontSize: 13,
+    fontWeight: "700",
+  },
+
+  text11: {
+    textAlign: "center",
+    color: "#00C853",
+    fontSize: 10,
+    marginTop: 18,
   },
 });
-
-export default function StyleRouterFallback() {
-  return null;
-}

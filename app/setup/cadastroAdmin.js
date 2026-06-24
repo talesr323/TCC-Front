@@ -2,7 +2,6 @@ import { router } from "expo-router";
 import { useState } from "react";
 import {
   Alert,
-  Image,
   ScrollView,
   Text,
   TextInput,
@@ -10,7 +9,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { styles } from "../../src/styles/style"; // Importando os estilos isolados
+import { styles } from "../../src/styles/style";
 
 export default function CadastroAdmin() {
   const [loading, setLoading] = useState(false);
@@ -28,7 +27,6 @@ export default function CadastroAdmin() {
     cpf: "",
     telefone: "",
     senha: "",
-    confirmarSenha: "", // Adicionado para bater com o layout visual
   });
 
   function handleChange(field, value) {
@@ -39,15 +37,12 @@ export default function CadastroAdmin() {
   }
 
   async function handleSubmit() {
-    if (form.senha !== form.confirmarSenha) {
-      Alert.alert("Erro", "As senhas não coincidem!");
-      return;
-    }
+    if (loading) return;
 
     try {
       setLoading(true);
 
-      const response = await fetch("http://192.168.1.147:3001/admin", {
+      const response = await fetch("http://192.168.0.10:3001/admin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -77,17 +72,15 @@ export default function CadastroAdmin() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView}>
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <View style={styles.column}>
-          <Image
-            source={{
-              uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/m3yzw5ym_expires_30_days.png",
-            }}
-            resizeMode={"stretch"}
-            style={styles.image}
-          />
+          <View style={styles.logoIcon}>
+            <Text style={styles.logoIconText}>▣</Text>
+          </View>
+
           <Text style={styles.text}>Cadastro Inicial</Text>
           <Text style={styles.text2}>Configure sua academia</Text>
+
           <TouchableOpacity style={styles.button}>
             <Text style={styles.text3}>Administrador</Text>
           </TouchableOpacity>
@@ -95,40 +88,28 @@ export default function CadastroAdmin() {
 
         <View style={styles.column2}>
           <View style={styles.column}>
-            <Image
-              source={{
-                uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/241oxn4x_expires_30_days.png",
-              }}
-              resizeMode={"stretch"}
-              style={styles.image2}
-            />
+            <View style={styles.avatarCircle}>
+              <Text style={styles.avatarIcon}>📷</Text>
+              <View style={styles.plusBadge}>
+                <Text style={styles.plusText}>+</Text>
+              </View>
+            </View>
+
             <Text style={styles.text4}>Foto de perfil (opcional)</Text>
           </View>
 
           <View style={styles.row}>
-            <Image
-              source={{
-                uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/tkzi2qq5_expires_30_days.png",
-              }}
-              resizeMode={"stretch"}
-              style={styles.image3}
-            />
+            <Text style={styles.sectionIcon}>⌂</Text>
             <Text style={styles.text5}>Dados da Academia</Text>
           </View>
 
-          {/* Nome da Academia */}
           <View style={styles.column3}>
             <View style={styles.view}>
               <Text style={styles.text6}>Nome da Academia *</Text>
             </View>
+
             <View style={styles.row2}>
-              <Image
-                source={{
-                  uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/bmm4i9gq_expires_30_days.png",
-                }}
-                resizeMode={"stretch"}
-                style={styles.image4}
-              />
+              <Text style={styles.inputIcon}>▣</Text>
               <TextInput
                 placeholder="Academia FitPro"
                 value={form.nomeAcademia}
@@ -138,19 +119,13 @@ export default function CadastroAdmin() {
             </View>
           </View>
 
-          {/* CNPJ */}
           <View style={styles.column3}>
             <View style={styles.view}>
               <Text style={styles.text6}>CNPJ *</Text>
             </View>
+
             <View style={styles.row2}>
-              <Image
-                source={{
-                  uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/krwrhq5m_expires_30_days.png",
-                }}
-                resizeMode={"stretch"}
-                style={styles.image4}
-              />
+              <Text style={styles.inputIcon}>▣</Text>
               <TextInput
                 placeholder="00.000.000/0000-00"
                 value={form.cnpj}
@@ -160,19 +135,13 @@ export default function CadastroAdmin() {
             </View>
           </View>
 
-          {/* Endereço */}
           <View style={styles.column4}>
             <View style={styles.view}>
               <Text style={styles.text6}>Endereço *</Text>
             </View>
+
             <View style={styles.row2}>
-              <Image
-                source={{
-                  uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/tk3w188p_expires_30_days.png",
-                }}
-                resizeMode={"stretch"}
-                style={styles.image4}
-              />
+              <Text style={styles.inputIcon}>⌖</Text>
               <TextInput
                 placeholder="Rua, número, bairro"
                 value={form.endereco}
@@ -182,7 +151,6 @@ export default function CadastroAdmin() {
             </View>
           </View>
 
-          {/* CEP, Cidade e Estado */}
           <View style={styles.row3}>
             <View style={styles.column5}>
               <Text style={styles.text7}>CEP *</Text>
@@ -210,6 +178,7 @@ export default function CadastroAdmin() {
               <View style={styles.view2}>
                 <Text style={styles.text6}>Estado *</Text>
               </View>
+
               <View style={styles.row2}>
                 <TextInput
                   placeholder="SP"
@@ -226,33 +195,20 @@ export default function CadastroAdmin() {
             </View>
           </View>
 
-          {/* Seção Administrador */}
           <View style={styles.column8}>
             <View style={styles.row4}>
-              <Image
-                source={{
-                  uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/slrqcmhh_expires_30_days.png",
-                }}
-                resizeMode={"stretch"}
-                style={styles.image3}
-              />
+              <Text style={styles.sectionIcon}>♙</Text>
               <Text style={styles.text5}>Dados do Administrador</Text>
             </View>
 
-            {/* Nome e Sobrenome */}
             <View style={styles.row5}>
               <View style={styles.column9}>
                 <View style={styles.view}>
                   <Text style={styles.text6}>Nome *</Text>
                 </View>
+
                 <View style={styles.row2}>
-                  <Image
-                    source={{
-                      uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/1r3pg6r3_expires_30_days.png",
-                    }}
-                    resizeMode={"stretch"}
-                    style={styles.image4}
-                  />
+                  <Text style={styles.inputIcon}>♙</Text>
                   <TextInput
                     placeholder="João"
                     value={form.nome}
@@ -266,14 +222,9 @@ export default function CadastroAdmin() {
                 <View style={styles.view}>
                   <Text style={styles.text6}>Sobrenome *</Text>
                 </View>
+
                 <View style={styles.row2}>
-                  <Image
-                    source={{
-                      uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/fhyi9c7j_expires_30_days.png",
-                    }}
-                    resizeMode={"stretch"}
-                    style={styles.image4}
-                  />
+                  <Text style={styles.inputIcon}>♙</Text>
                   <TextInput
                     placeholder="Silva"
                     value={form.sobrenome}
@@ -284,19 +235,13 @@ export default function CadastroAdmin() {
               </View>
             </View>
 
-            {/* E-mail */}
             <View style={styles.column11}>
               <View style={styles.view}>
                 <Text style={styles.text6}>E-mail *</Text>
               </View>
+
               <View style={styles.row2}>
-                <Image
-                  source={{
-                    uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/l5mar5yq_expires_30_days.png",
-                  }}
-                  resizeMode={"stretch"}
-                  style={styles.image4}
-                />
+                <Text style={styles.inputIcon}>✉</Text>
                 <TextInput
                   placeholder="seuemail@exemplo.com"
                   keyboardType="email-address"
@@ -308,19 +253,13 @@ export default function CadastroAdmin() {
               </View>
             </View>
 
-            {/* CPF */}
             <View style={{ marginTop: 12 }}>
               <View style={styles.view}>
                 <Text style={styles.text6}>CPF *</Text>
               </View>
+
               <View style={styles.row2}>
-                <Image
-                  source={{
-                    uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/h1xw418p_expires_30_days.png",
-                  }}
-                  resizeMode={"stretch"}
-                  style={styles.image4}
-                />
+                <Text style={styles.inputIcon}>▣</Text>
                 <TextInput
                   placeholder="000.000.000-00"
                   value={form.cpf}
@@ -330,19 +269,13 @@ export default function CadastroAdmin() {
               </View>
             </View>
 
-            {/* Telefone */}
             <View style={[styles.column11, { marginTop: 12 }]}>
               <View style={styles.view}>
                 <Text style={styles.text6}>Telefone *</Text>
               </View>
+
               <View style={styles.row2}>
-                <Image
-                  source={{
-                    uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/60pd6c9q_expires_30_days.png",
-                  }}
-                  resizeMode={"stretch"}
-                  style={styles.image4}
-                />
+                <Text style={styles.inputIcon}>☎</Text>
                 <TextInput
                   placeholder="(00) 00000-0000"
                   value={form.telefone}
@@ -352,19 +285,13 @@ export default function CadastroAdmin() {
               </View>
             </View>
 
-            {/* Senha */}
             <View style={[styles.column11, { marginTop: 12 }]}>
               <View style={styles.view}>
                 <Text style={styles.text6}>Senha *</Text>
               </View>
+
               <View style={styles.row2}>
-                <Image
-                  source={{
-                    uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/76zukml0_expires_30_days.png",
-                  }}
-                  resizeMode={"stretch"}
-                  style={styles.image4}
-                />
+                <Text style={styles.inputIcon}>⌕</Text>
                 <TextInput
                   placeholder="Mínimo 6 caracteres"
                   secureTextEntry
@@ -374,32 +301,8 @@ export default function CadastroAdmin() {
                 />
               </View>
             </View>
-
-            {/* Confirmar Senha */}
-            <View style={{ marginTop: 12 }}>
-              <View style={styles.view}>
-                <Text style={styles.text6}>Confirmar Senha *</Text>
-              </View>
-              <View style={styles.row2}>
-                <Image
-                  source={{
-                    uri: "https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Qq7nG9QwoU/fywmwzm7_expires_30_days.png",
-                  }}
-                  resizeMode={"stretch"}
-                  style={styles.image4}
-                />
-                <TextInput
-                  placeholder="Repita sua senha"
-                  secureTextEntry
-                  value={form.confirmarSenha}
-                  onChangeText={(v) => handleChange("confirmarSenha", v)}
-                  style={styles.input}
-                />
-              </View>
-            </View>
           </View>
 
-          {/* Botão Submeter */}
           <TouchableOpacity
             style={[styles.button4, { opacity: loading ? 0.6 : 1 }]}
             onPress={handleSubmit}
