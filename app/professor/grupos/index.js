@@ -1,33 +1,31 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useRouter } from "expo-router";
+import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import {
-  ActivityIndicator,
-  Alert,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    ActivityIndicator,
+    Alert,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const API_URL = "http://192.168.0.10:3001";
 
-export default function Users() {
-  const router = useRouter();
-
-  const [usuarios, setUsuarios] = useState([]);
+export default function GruposTreino() {
+  const [grupos, setGrupos] = useState([]);
   const [nome, setNome] = useState("");
-  const [tipo, setTipo] = useState("");
+  const [nivel, setNivel] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    buscarUsuarios();
+    buscarGrupos();
   }, []);
 
-  async function buscarUsuarios(nomeFiltro = nome, tipoFiltro = tipo) {
+  async function buscarGrupos(nomeFiltro = nome, nivelFiltro = nivel) {
     try {
       setLoading(true);
 
@@ -41,11 +39,13 @@ export default function Users() {
       let url = "";
 
       if (nomeFiltro.trim()) {
-        url = `${API_URL}/usuarios?nome=${encodeURIComponent(nomeFiltro.trim())}`;
-      } else if (tipoFiltro) {
-        url = `${API_URL}/usuarios/tipo?tipo=${tipoFiltro}`;
+        url = `${API_URL}/grupos-treino?nome=${encodeURIComponent(nomeFiltro.trim())}`;
+      } else if (nivelFiltro.trim()) {
+        url = `${API_URL}/grupos-treino/nivel?nivel=${encodeURIComponent(
+          nivelFiltro.trim()
+        )}`;
       } else {
-        url = `${API_URL}/usuarios/tipo`;
+        url = `${API_URL}/grupos-treino/nivel`;
       }
 
       const response = await fetch(url, {
@@ -58,11 +58,11 @@ export default function Users() {
       const data = await response.json();
 
       if (!response.ok) {
-        Alert.alert("Erro", data.error || data.message || "Erro ao buscar usuários.");
+        Alert.alert("Erro", data.error || data.message || "Erro ao buscar grupos.");
         return;
       }
 
-      setUsuarios(data);
+      setGrupos(Array.isArray(data) ? data : []);
     } catch (error) {
       console.log(error);
       Alert.alert("Erro", "Não foi possível conectar ao servidor.");
@@ -73,31 +73,28 @@ export default function Users() {
 
   function limparFiltros() {
     setNome("");
-    setTipo("");
-    buscarUsuarios("", "");
+    setNivel("");
+    buscarGrupos("", "");
   }
 
-  function descobrirTipo(usuario) {
-    if (usuario.professor) return "PROFESSOR";
-    if (usuario.aluno) return "ALUNO";
-    return "USUÁRIO";
+  function selecionarNivel(valor) {
+    setNivel(valor);
   }
 
-  function editarUsuario(usuario) {
+  function editarGrupo(grupo) {
     router.push({
-      pathname: "/admin/edit-user",
+      pathname: "/professor/grupos/edit-group",
       params: {
-        id: String(usuario.id),
-        nome: usuario.nome || "",
-        email: usuario.email || "",
-        telefone: usuario.telefone || "",
-        foto_perfil: usuario.foto_perfil || "",
+        id: String(grupo.id),
+        nome: grupo.nome || "",
+        descricao: grupo.descricao || "",
+        nivel: grupo.nivel || "",
       },
     });
   }
 
-  async function excluirUsuario(id) {
-    Alert.alert("Excluir usuário", "Deseja realmente excluir este usuário?", [
+  async function excluirGrupo(id) {
+    Alert.alert("Excluir grupo", "Deseja realmente excluir este grupo de treino?", [
       { text: "Cancelar", style: "cancel" },
       {
         text: "Excluir",
@@ -113,7 +110,7 @@ export default function Users() {
               return;
             }
 
-            const response = await fetch(`${API_URL}/usuarios/${id}`, {
+            const response = await fetch(`${API_URL}/grupos-treino/${id}`, {
               method: "DELETE",
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -123,15 +120,15 @@ export default function Users() {
             const data = await response.json();
 
             if (!response.ok) {
-              Alert.alert("Erro", data.error || data.message || "Erro ao excluir usuário.");
+              Alert.alert("Erro", data.error || data.message || "Erro ao excluir grupo.");
               return;
             }
 
-            Alert.alert("Sucesso", "Usuário excluído com sucesso.");
-            buscarUsuarios();
+            Alert.alert("Sucesso", "Grupo de treino excluído com sucesso.");
+            buscarGrupos();
           } catch (error) {
             console.log(error);
-            Alert.alert("Erro", "Não foi possível excluir o usuário.");
+            Alert.alert("Erro", "Não foi possível excluir o grupo.");
           } finally {
             setLoading(false);
           }
@@ -143,52 +140,93 @@ export default function Users() {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        <Text style={styles.title}>Usuários</Text>
-        <Text style={styles.subtitle}>Pesquise por nome ou tipo</Text>
+        <Text style={styles.title}>Grupos de Treino</Text>
+        <Text style={styles.subtitle}>Pesquise por nome ou nível</Text>
 
         <View style={styles.filterCard}>
           <TextInput
             style={styles.input}
             placeholder="Pesquisar por nome"
+            placeholderTextColor="#99A1AF"
             value={nome}
             onChangeText={setNome}
           />
 
-          <View style={styles.tipoBox}>
+          <View style={styles.nivelBox}>
             <TouchableOpacity
-              style={[styles.tipoButton, tipo === "" && styles.tipoButtonActive]}
-              onPress={() => setTipo("")}
+              style={[styles.nivelButton, nivel === "" && styles.nivelButtonActive]}
+              onPress={() => selecionarNivel("")}
             >
-              <Text style={[styles.tipoText, tipo === "" && styles.tipoTextActive]}>
+              <Text style={[styles.nivelText, nivel === "" && styles.nivelTextActive]}>
                 Todos
               </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.tipoButton, tipo === "ALUNO" && styles.tipoButtonActive]}
-              onPress={() => setTipo("ALUNO")}
+              style={[
+                styles.nivelButton,
+                nivel === "INICIANTE" && styles.nivelButtonActive,
+              ]}
+              onPress={() => selecionarNivel("INICIANTE")}
             >
-              <Text style={[styles.tipoText, tipo === "ALUNO" && styles.tipoTextActive]}>
-                Alunos
+              <Text
+                style={[
+                  styles.nivelText,
+                  nivel === "INICIANTE" && styles.nivelTextActive,
+                ]}
+              >
+                Iniciante
               </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.tipoButton, tipo === "PROFESSOR" && styles.tipoButtonActive]}
-              onPress={() => setTipo("PROFESSOR")}
+              style={[
+                styles.nivelButton,
+                nivel === "INTERMEDIARIO" && styles.nivelButtonActive,
+              ]}
+              onPress={() => selecionarNivel("INTERMEDIARIO")}
             >
-              <Text style={[styles.tipoText, tipo === "PROFESSOR" && styles.tipoTextActive]}>
-                Professores
+              <Text
+                style={[
+                  styles.nivelText,
+                  nivel === "INTERMEDIARIO" && styles.nivelTextActive,
+                ]}
+              >
+                Inter.
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[
+                styles.nivelButton,
+                nivel === "AVANCADO" && styles.nivelButtonActive,
+              ]}
+              onPress={() => selecionarNivel("AVANCADO")}
+            >
+              <Text
+                style={[
+                  styles.nivelText,
+                  nivel === "AVANCADO" && styles.nivelTextActive,
+                ]}
+              >
+                Avanç.
               </Text>
             </TouchableOpacity>
           </View>
 
-          <TouchableOpacity style={styles.searchButton} onPress={() => buscarUsuarios()}>
+          <TouchableOpacity style={styles.searchButton} onPress={() => buscarGrupos()}>
             <Text style={styles.searchButtonText}>Buscar</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.clearButton} onPress={limparFiltros}>
             <Text style={styles.clearButtonText}>Limpar filtros</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.createButton}
+            onPress={() => router.push("/professor/grupos/create-group")}
+          >
+            <Text style={styles.createButtonText}>Criar novo grupo</Text>
           </TouchableOpacity>
         </View>
 
@@ -196,34 +234,34 @@ export default function Users() {
           <ActivityIndicator size="large" color="#00C853" style={{ marginTop: 30 }} />
         ) : (
           <View style={styles.list}>
-            {usuarios.length === 0 ? (
-              <Text style={styles.emptyText}>Nenhum usuário encontrado.</Text>
+            {grupos.length === 0 ? (
+              <Text style={styles.emptyText}>Nenhum grupo encontrado.</Text>
             ) : (
-              usuarios.map((usuario) => (
-                <View key={String(usuario.id)} style={styles.userCard}>
-                  <View style={styles.userInfo}>
-                    <Text style={styles.userName}>{usuario.nome}</Text>
-                    <Text style={styles.userEmail}>{usuario.email}</Text>
-                    <Text style={styles.userPhone}>
-                      {usuario.telefone || "Sem telefone"}
+              grupos.map((grupo) => (
+                <View key={String(grupo.id)} style={styles.groupCard}>
+                  <View style={styles.groupInfo}>
+                    <Text style={styles.groupName}>{grupo.nome}</Text>
+
+                    <Text style={styles.groupLevel}>
+                      {grupo.nivel || "Sem nível"}
                     </Text>
 
-                    <View style={styles.badge}>
-                      <Text style={styles.badgeText}>{descobrirTipo(usuario)}</Text>
-                    </View>
+                    <Text style={styles.groupDescription}>
+                      {grupo.descricao || "Sem descrição"}
+                    </Text>
                   </View>
 
                   <View style={styles.buttonBox}>
                     <TouchableOpacity
                       style={styles.editButton}
-                      onPress={() => editarUsuario(usuario)}
+                      onPress={() => editarGrupo(grupo)}
                     >
                       <Text style={styles.editButtonText}>Editar</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity
                       style={styles.deleteButton}
-                      onPress={() => excluirUsuario(usuario.id)}
+                      onPress={() => excluirGrupo(grupo.id)}
                     >
                       <Text style={styles.deleteButtonText}>Excluir</Text>
                     </TouchableOpacity>
@@ -279,12 +317,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     fontSize: 14,
     marginBottom: 12,
+    color: "#111827",
   },
-  tipoBox: {
+  nivelBox: {
     flexDirection: "row",
     marginBottom: 12,
   },
-  tipoButton: {
+  nivelButton: {
     flex: 1,
     height: 40,
     borderRadius: 9,
@@ -295,16 +334,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginRight: 6,
   },
-  tipoButtonActive: {
+  nivelButtonActive: {
     backgroundColor: "#00C853",
     borderColor: "#00C853",
   },
-  tipoText: {
+  nivelText: {
     color: "#374151",
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: "700",
   },
-  tipoTextActive: {
+  nivelTextActive: {
     color: "#FFFFFF",
   },
   searchButton: {
@@ -328,16 +367,29 @@ const styles = StyleSheet.create({
     borderColor: "#E5E7EB",
     alignItems: "center",
     justifyContent: "center",
+    marginBottom: 8,
   },
   clearButtonText: {
     color: "#374151",
     fontWeight: "700",
     fontSize: 13,
   },
+  createButton: {
+    height: 42,
+    borderRadius: 10,
+    backgroundColor: "#E9FFF5",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  createButtonText: {
+    color: "#00C853",
+    fontWeight: "700",
+    fontSize: 13,
+  },
   list: {
     marginBottom: 30,
   },
-  userCard: {
+  groupCard: {
     backgroundColor: "#FFFFFF",
     borderRadius: 16,
     padding: 16,
@@ -351,37 +403,26 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 5 },
     elevation: 4,
   },
-  userInfo: {
+  groupInfo: {
     flex: 1,
     marginRight: 10,
   },
-  userName: {
+  groupName: {
     fontSize: 16,
     color: "#1F2937",
     fontWeight: "700",
   },
-  userEmail: {
+  groupLevel: {
     fontSize: 12,
-    color: "#6B7280",
+    color: "#00C853",
+    fontWeight: "700",
     marginTop: 4,
   },
-  userPhone: {
+  groupDescription: {
     fontSize: 12,
     color: "#6B7280",
-    marginTop: 2,
-  },
-  badge: {
-    alignSelf: "flex-start",
-    backgroundColor: "#E9FFF5",
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 999,
-    marginTop: 8,
-  },
-  badgeText: {
-    color: "#00C853",
-    fontSize: 11,
-    fontWeight: "700",
+    marginTop: 6,
+    lineHeight: 18,
   },
   buttonBox: {
     gap: 8,

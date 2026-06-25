@@ -1,33 +1,31 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useRouter } from "expo-router";
+import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import {
-  ActivityIndicator,
-  Alert,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    ActivityIndicator,
+    Alert,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const API_URL = "http://192.168.0.10:3001";
 
-export default function Users() {
-  const router = useRouter();
-
-  const [usuarios, setUsuarios] = useState([]);
+export default function Exercicios() {
+  const [exercicios, setExercicios] = useState([]);
   const [nome, setNome] = useState("");
-  const [tipo, setTipo] = useState("");
+  const [grupoMuscular, setGrupoMuscular] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    buscarUsuarios();
+    buscarExercicios();
   }, []);
 
-  async function buscarUsuarios(nomeFiltro = nome, tipoFiltro = tipo) {
+  async function buscarExercicios(nomeFiltro = nome, grupoFiltro = grupoMuscular) {
     try {
       setLoading(true);
 
@@ -41,11 +39,13 @@ export default function Users() {
       let url = "";
 
       if (nomeFiltro.trim()) {
-        url = `${API_URL}/usuarios?nome=${encodeURIComponent(nomeFiltro.trim())}`;
-      } else if (tipoFiltro) {
-        url = `${API_URL}/usuarios/tipo?tipo=${tipoFiltro}`;
+        url = `${API_URL}/exercicios?nome=${encodeURIComponent(nomeFiltro.trim())}`;
+      } else if (grupoFiltro.trim()) {
+        url = `${API_URL}/exercicios/grupo-muscular?grupo_muscular=${encodeURIComponent(
+          grupoFiltro.trim()
+        )}`;
       } else {
-        url = `${API_URL}/usuarios/tipo`;
+        url = `${API_URL}/exercicios/grupo-muscular`;
       }
 
       const response = await fetch(url, {
@@ -58,11 +58,11 @@ export default function Users() {
       const data = await response.json();
 
       if (!response.ok) {
-        Alert.alert("Erro", data.error || data.message || "Erro ao buscar usuários.");
+        Alert.alert("Erro", data.error || data.message || "Erro ao buscar exercícios.");
         return;
       }
 
-      setUsuarios(data);
+      setExercicios(Array.isArray(data) ? data : []);
     } catch (error) {
       console.log(error);
       Alert.alert("Erro", "Não foi possível conectar ao servidor.");
@@ -73,31 +73,24 @@ export default function Users() {
 
   function limparFiltros() {
     setNome("");
-    setTipo("");
-    buscarUsuarios("", "");
+    setGrupoMuscular("");
+    buscarExercicios("", "");
   }
 
-  function descobrirTipo(usuario) {
-    if (usuario.professor) return "PROFESSOR";
-    if (usuario.aluno) return "ALUNO";
-    return "USUÁRIO";
-  }
-
-  function editarUsuario(usuario) {
+  function editarExercicio(exercicio) {
     router.push({
-      pathname: "/admin/edit-user",
+      pathname: "/professor/exercicios/edit-exercise",
       params: {
-        id: String(usuario.id),
-        nome: usuario.nome || "",
-        email: usuario.email || "",
-        telefone: usuario.telefone || "",
-        foto_perfil: usuario.foto_perfil || "",
+        id: String(exercicio.id),
+        nome: exercicio.nome || "",
+        descricao: exercicio.descricao || "",
+        grupo_muscular: exercicio.grupo_muscular || "",
       },
     });
   }
 
-  async function excluirUsuario(id) {
-    Alert.alert("Excluir usuário", "Deseja realmente excluir este usuário?", [
+  async function excluirExercicio(id) {
+    Alert.alert("Excluir exercício", "Deseja realmente excluir este exercício?", [
       { text: "Cancelar", style: "cancel" },
       {
         text: "Excluir",
@@ -113,7 +106,7 @@ export default function Users() {
               return;
             }
 
-            const response = await fetch(`${API_URL}/usuarios/${id}`, {
+            const response = await fetch(`${API_URL}/exercicios/${id}`, {
               method: "DELETE",
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -123,15 +116,15 @@ export default function Users() {
             const data = await response.json();
 
             if (!response.ok) {
-              Alert.alert("Erro", data.error || data.message || "Erro ao excluir usuário.");
+              Alert.alert("Erro", data.error || data.message || "Erro ao excluir exercício.");
               return;
             }
 
-            Alert.alert("Sucesso", "Usuário excluído com sucesso.");
-            buscarUsuarios();
+            Alert.alert("Sucesso", "Exercício excluído com sucesso.");
+            buscarExercicios();
           } catch (error) {
             console.log(error);
-            Alert.alert("Erro", "Não foi possível excluir o usuário.");
+            Alert.alert("Erro", "Não foi possível excluir o exercício.");
           } finally {
             setLoading(false);
           }
@@ -143,52 +136,39 @@ export default function Users() {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        <Text style={styles.title}>Usuários</Text>
-        <Text style={styles.subtitle}>Pesquise por nome ou tipo</Text>
+        <Text style={styles.title}>Exercícios</Text>
+        <Text style={styles.subtitle}>Pesquise por nome ou grupo muscular</Text>
 
         <View style={styles.filterCard}>
           <TextInput
             style={styles.input}
             placeholder="Pesquisar por nome"
+            placeholderTextColor="#99A1AF"
             value={nome}
             onChangeText={setNome}
           />
 
-          <View style={styles.tipoBox}>
-            <TouchableOpacity
-              style={[styles.tipoButton, tipo === "" && styles.tipoButtonActive]}
-              onPress={() => setTipo("")}
-            >
-              <Text style={[styles.tipoText, tipo === "" && styles.tipoTextActive]}>
-                Todos
-              </Text>
-            </TouchableOpacity>
+          <TextInput
+            style={styles.input}
+            placeholder="Filtrar por grupo muscular"
+            placeholderTextColor="#99A1AF"
+            value={grupoMuscular}
+            onChangeText={setGrupoMuscular}
+          />
 
-            <TouchableOpacity
-              style={[styles.tipoButton, tipo === "ALUNO" && styles.tipoButtonActive]}
-              onPress={() => setTipo("ALUNO")}
-            >
-              <Text style={[styles.tipoText, tipo === "ALUNO" && styles.tipoTextActive]}>
-                Alunos
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.tipoButton, tipo === "PROFESSOR" && styles.tipoButtonActive]}
-              onPress={() => setTipo("PROFESSOR")}
-            >
-              <Text style={[styles.tipoText, tipo === "PROFESSOR" && styles.tipoTextActive]}>
-                Professores
-              </Text>
-            </TouchableOpacity>
-          </View>
-
-          <TouchableOpacity style={styles.searchButton} onPress={() => buscarUsuarios()}>
+          <TouchableOpacity style={styles.searchButton} onPress={() => buscarExercicios()}>
             <Text style={styles.searchButtonText}>Buscar</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.clearButton} onPress={limparFiltros}>
             <Text style={styles.clearButtonText}>Limpar filtros</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.createButton}
+            onPress={() => router.push("/professor/exercicios/create-exercise")}
+          >
+            <Text style={styles.createButtonText}>Criar novo exercício</Text>
           </TouchableOpacity>
         </View>
 
@@ -196,34 +176,32 @@ export default function Users() {
           <ActivityIndicator size="large" color="#00C853" style={{ marginTop: 30 }} />
         ) : (
           <View style={styles.list}>
-            {usuarios.length === 0 ? (
-              <Text style={styles.emptyText}>Nenhum usuário encontrado.</Text>
+            {exercicios.length === 0 ? (
+              <Text style={styles.emptyText}>Nenhum exercício encontrado.</Text>
             ) : (
-              usuarios.map((usuario) => (
-                <View key={String(usuario.id)} style={styles.userCard}>
-                  <View style={styles.userInfo}>
-                    <Text style={styles.userName}>{usuario.nome}</Text>
-                    <Text style={styles.userEmail}>{usuario.email}</Text>
-                    <Text style={styles.userPhone}>
-                      {usuario.telefone || "Sem telefone"}
+              exercicios.map((exercicio) => (
+                <View key={String(exercicio.id)} style={styles.exerciseCard}>
+                  <View style={styles.exerciseInfo}>
+                    <Text style={styles.exerciseName}>{exercicio.nome}</Text>
+                    <Text style={styles.exerciseGroup}>
+                      {exercicio.grupo_muscular}
                     </Text>
-
-                    <View style={styles.badge}>
-                      <Text style={styles.badgeText}>{descobrirTipo(usuario)}</Text>
-                    </View>
+                    <Text style={styles.exerciseDescription}>
+                      {exercicio.descricao || "Sem descrição"}
+                    </Text>
                   </View>
 
                   <View style={styles.buttonBox}>
                     <TouchableOpacity
                       style={styles.editButton}
-                      onPress={() => editarUsuario(usuario)}
+                      onPress={() => editarExercicio(exercicio)}
                     >
                       <Text style={styles.editButtonText}>Editar</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity
                       style={styles.deleteButton}
-                      onPress={() => excluirUsuario(usuario.id)}
+                      onPress={() => excluirExercicio(exercicio.id)}
                     >
                       <Text style={styles.deleteButtonText}>Excluir</Text>
                     </TouchableOpacity>
@@ -279,33 +257,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     fontSize: 14,
     marginBottom: 12,
-  },
-  tipoBox: {
-    flexDirection: "row",
-    marginBottom: 12,
-  },
-  tipoButton: {
-    flex: 1,
-    height: 40,
-    borderRadius: 9,
-    backgroundColor: "#F9FAFB",
-    borderWidth: 1,
-    borderColor: "#E5E7EB",
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 6,
-  },
-  tipoButtonActive: {
-    backgroundColor: "#00C853",
-    borderColor: "#00C853",
-  },
-  tipoText: {
-    color: "#374151",
-    fontSize: 12,
-    fontWeight: "700",
-  },
-  tipoTextActive: {
-    color: "#FFFFFF",
+    color: "#111827",
   },
   searchButton: {
     height: 46,
@@ -328,16 +280,29 @@ const styles = StyleSheet.create({
     borderColor: "#E5E7EB",
     alignItems: "center",
     justifyContent: "center",
+    marginBottom: 8,
   },
   clearButtonText: {
     color: "#374151",
     fontWeight: "700",
     fontSize: 13,
   },
+  createButton: {
+    height: 42,
+    borderRadius: 10,
+    backgroundColor: "#E9FFF5",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  createButtonText: {
+    color: "#00C853",
+    fontWeight: "700",
+    fontSize: 13,
+  },
   list: {
     marginBottom: 30,
   },
-  userCard: {
+  exerciseCard: {
     backgroundColor: "#FFFFFF",
     borderRadius: 16,
     padding: 16,
@@ -351,37 +316,26 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 5 },
     elevation: 4,
   },
-  userInfo: {
+  exerciseInfo: {
     flex: 1,
     marginRight: 10,
   },
-  userName: {
+  exerciseName: {
     fontSize: 16,
     color: "#1F2937",
     fontWeight: "700",
   },
-  userEmail: {
+  exerciseGroup: {
     fontSize: 12,
-    color: "#6B7280",
+    color: "#00C853",
+    fontWeight: "700",
     marginTop: 4,
   },
-  userPhone: {
+  exerciseDescription: {
     fontSize: 12,
     color: "#6B7280",
-    marginTop: 2,
-  },
-  badge: {
-    alignSelf: "flex-start",
-    backgroundColor: "#E9FFF5",
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 999,
-    marginTop: 8,
-  },
-  badgeText: {
-    color: "#00C853",
-    fontSize: 11,
-    fontWeight: "700",
+    marginTop: 6,
+    lineHeight: 18,
   },
   buttonBox: {
     gap: 8,

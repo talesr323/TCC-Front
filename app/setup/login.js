@@ -65,14 +65,29 @@ export default function Login() {
         return;
       }
 
-      await AsyncStorage.setItem("token", data.token);
-      await AsyncStorage.setItem("tipo", data.tipo);
+await AsyncStorage.setItem("token", data.token);
+await AsyncStorage.setItem("tipo", data.tipo);
 
-      Alert.alert("Sucesso", "Login realizado!");
+Alert.alert("Sucesso", "Login realizado!");
 
-      setTimeout(() => {
-        router.replace(data.tipo === "ADMIN" ? "/admin" : "/usuario");
-      }, 200);
+setTimeout(() => {
+  switch (data.tipo) {
+    case "ADMIN":
+      router.replace("/admin");
+      break;
+
+    case "PROFESSOR":
+      router.replace("/professor");
+      break;
+
+    case "ALUNO":
+      router.replace("/aluno");
+      break;
+
+    default:
+      Alert.alert("Erro", "Tipo de usuário inválido.");
+  }
+}, 200);
     } catch (error) {
       Alert.alert("Erro", "Não foi possível conectar ao servidor.");
     } finally {
